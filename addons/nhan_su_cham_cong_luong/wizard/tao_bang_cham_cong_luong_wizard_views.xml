@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard Form View -->
+    <record id="view_tao_bang_cham_cong_luong_wizard_form" model="ir.ui.view">
+        <field name="name">tao.bang.cham.cong.luong.wizard.form</field>
+        <field name="model">tao.bang.cham.cong.luong.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Tạo bảng chấm công và lương">
+                <group>
+                    <group string="Thời gian">
+                        <field name="thang"/>
+                        <field name="nam"/>
+                    </group>
+                    <group string="Tùy chọn">
+                        <field name="tao_bang_cham_cong"/>
+                        <field name="tao_bang_luong"/>
+                        <field name="ghi_de_neu_ton_tai"/>
+                    </group>
+                </group>
+                <group string="Nhân viên">
+                    <field name="nhan_vien_ids" widget="many2many_tags" 
+                           placeholder="Để trống để tạo cho tất cả nhân viên"/>
+                </group>
+                <footer>
+                    <button name="action_tao_bang" string="Tạo bảng" type="object" class="btn-primary"/>
+                    <button string="Hủy" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_tao_bang_cham_cong_luong_wizard" model="ir.actions.act_window">
+        <field name="name">Tạo bảng chấm công và lương</field>
+        <field name="res_model">tao.bang.cham.cong.luong.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

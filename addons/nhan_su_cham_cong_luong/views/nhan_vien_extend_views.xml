@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Mở rộng form view của nhan_vien -->
+    <record id="view_nhan_vien_form_extend" model="ir.ui.view">
+        <field name="name">nhan_vien.form.extend</field>
+        <field name="model">nhan_vien</field>
+        <field name="inherit_id" ref="nhan_su.view_nhan_vien_form"/>
+        <field name="arch" type="xml">
+            <!-- Thêm header với các nút action -->
+            <form position="inside">
+                <header>
+                    <button name="action_view_bang_cham_cong" string="Xem chấm công" 
+                            type="object" class="btn-primary"/>
+                    <button name="action_view_bang_luong" string="Xem lương" 
+                            type="object" class="btn-primary"/>
+                    <button name="tao_bang_cham_cong_luong_thang_hien_tai" 
+                            string="Tạo bảng tháng hiện tại" 
+                            type="object" class="btn-secondary"/>
+                </header>
+            </form>
+            
+            <!-- Thêm thông tin thống kê -->
+            <field name="so_nguoi_bang_tuoi" position="after">
+                <field name="so_thang_cham_cong"/>
+                <field name="so_thang_luong"/>
+                <field name="hr_employee_id"/>
+            </field>
+            
+            <!-- Thêm tab chấm công và lương -->
+            <notebook position="inside">
+                <page string="Chấm công" name="cham_cong">
+                    <group>
+                        <group string="Thống kê">
+                            <field name="so_thang_cham_cong" readonly="1"/>
+                        </group>
+                        <group>
+                            <button name="action_view_bang_cham_cong" string="Xem tất cả" 
+                                    type="object" class="btn-link"/>
+                        </group>
+                    </group>
+                    <field name="bang_cham_cong_ids" readonly="1">
+                        <tree string="Bảng chấm công" limit="5" 
+                              decoration-info="trang_thai=='draft'" 
+                              decoration-success="trang_thai=='confirmed'">
+                            <field name="thang"/>
+                            <field name="nam"/>
+                            <field name="so_ngay_lam_viec"/>
+                            <field name="so_ngay_cong_chuan"/>
+                            <field name="tong_gio_lam_viec" widget="float_time"/>
+                            <field name="trang_thai" widget="badge"/>
+                        </tree>
+                    </field>
+                </page>
+                
+                <page string="Lương" name="luong">
+                    <group>
+                        <group string="Thống kê">
+                            <field name="so_thang_luong" readonly="1"/>
+                        </group>
+                        <group>
+                            <button name="action_view_bang_luong" string="Xem tất cả" 
+                                    type="object" class="btn-link"/>
+                        </group>
+                    </group>
+                    <field name="bang_luong_ids" readonly="1">
+                        <tree string="Bảng lương" limit="5"
+                              decoration-info="trang_thai=='draft'" 
+                              decoration-warning="trang_thai=='calculated'"
+                              decoration-success="trang_thai=='confirmed'">
+                            <field name="thang"/>
+                            <field name="nam"/>
+                            <field name="luong_co_ban" widget="monetary"/>
+                            <field name="ty_le_cong" widget="percentage"/>
+                            <field name="tong_luong" widget="monetary"/>
+                            <field name="trang_thai" widget="badge"/>
+                            <field name="currency_id" invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <!-- Mở rộng tree view của nhan_vien -->
+    <record id="view_nhan_vien_tree_extend" model="ir.ui.view">
+        <field name="name">nhan_vien.tree.extend</field>
+        <field name="model">nhan_vien</field>
+        <field name="inherit_id" ref="nhan_su.view_nhan_vien_tree"/>
+        <field name="arch" type="xml">
+            <field name="email" position="after">
+                <field name="so_thang_cham_cong"/>
+                <field name="so_thang_luong"/>
+            </field>
+        </field>
+    </record>
+</odoo>

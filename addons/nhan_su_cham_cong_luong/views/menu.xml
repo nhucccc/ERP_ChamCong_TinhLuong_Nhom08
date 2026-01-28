@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem id="menu_nhan_su_cham_cong_luong_root" 
+              name="Chấm công &amp; Lương" 
+              sequence="50"/>
+
+    <!-- Chấm công Menu -->
+    <menuitem id="menu_cham_cong" 
+              name="Chấm công" 
+              parent="menu_nhan_su_cham_cong_luong_root" 
+              sequence="10"/>
+    
+    <menuitem id="menu_bang_cham_cong_thang" 
+              name="Bảng chấm công theo tháng" 
+              parent="menu_cham_cong" 
+              action="action_bang_cham_cong_thang" 
+              sequence="10"/>
+
+    <!-- Lương Menu -->
+    <menuitem id="menu_luong" 
+              name="Lương" 
+              parent="menu_nhan_su_cham_cong_luong_root" 
+              sequence="20"/>
+    
+    <menuitem id="menu_bang_luong_thang" 
+              name="Bảng lương theo tháng" 
+              parent="menu_luong" 
+              action="action_bang_luong_thang" 
+              sequence="10"/>
+
+    <!-- Báo cáo Menu -->
+    <menuitem id="menu_bao_cao" 
+              name="Báo cáo" 
+              parent="menu_nhan_su_cham_cong_luong_root" 
+              sequence="30"/>
+
+    <!-- Cấu hình Menu -->
+    <menuitem id="menu_cau_hinh" 
+              name="Cấu hình" 
+              parent="menu_nhan_su_cham_cong_luong_root" 
+              sequence="40"/>
+    
+    <menuitem id="menu_tao_bang_wizard" 
+              name="Tạo bảng chấm công &amp; lương" 
+              parent="menu_cau_hinh" 
+              action="action_tao_bang_cham_cong_luong_wizard" 
+              sequence="10"/>
+</odoo>

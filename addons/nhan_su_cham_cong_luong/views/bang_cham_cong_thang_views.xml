@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_bang_cham_cong_thang_tree" model="ir.ui.view">
+        <field name="name">bang.cham.cong.thang.tree</field>
+        <field name="model">bang.cham.cong.thang</field>
+        <field name="arch" type="xml">
+            <tree string="Bảng chấm công theo tháng" decoration-info="trang_thai=='draft'" 
+                  decoration-success="trang_thai=='confirmed'" decoration-muted="trang_thai=='locked'">
+                <field name="nhan_vien_id"/>
+                <field name="thang"/>
+                <field name="nam"/>
+                <field name="so_ngay_lam_viec"/>
+                <field name="so_ngay_cong_chuan"/>
+                <field name="tong_gio_lam_viec" widget="float_time"/>
+                <field name="trang_thai" widget="badge" 
+                       decoration-info="trang_thai=='draft'" 
+                       decoration-success="trang_thai=='confirmed'" 
+                       decoration-muted="trang_thai=='locked'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_bang_cham_cong_thang_form" model="ir.ui.view">
+        <field name="name">bang.cham.cong.thang.form</field>
+        <field name="model">bang.cham.cong.thang</field>
+        <field name="arch" type="xml">
+            <form string="Bảng chấm công theo tháng">
+                <header>
+                    <button name="action_confirm" string="Xác nhận" type="object" 
+                            class="btn-primary" attrs="{'invisible': [('trang_thai', '!=', 'draft')]}"/>
+                    <button name="action_lock" string="Khóa" type="object" 
+                            class="btn-secondary" attrs="{'invisible': [('trang_thai', '!=', 'confirmed')]}"/>
+                    <button name="action_reset_to_draft" string="Đưa về nháp" type="object" 
+                            attrs="{'invisible': [('trang_thai', '=', 'draft')]}"/>
+                    <field name="trang_thai" widget="statusbar" statusbar_visible="draft,confirmed,locked"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="ten_bang_cham_cong" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="thong_tin_co_ban" string="Thông tin cơ bản">
+                            <field name="nhan_vien_id" attrs="{'readonly': [('trang_thai', '!=', 'draft')]}"/>
+                            <field name="thang" attrs="{'readonly': [('trang_thai', '!=', 'draft')]}"/>
+                            <field name="nam" attrs="{'readonly': [('trang_thai', '!=', 'draft')]}"/>
+                            <field name="hr_employee_id" readonly="1"/>
+                        </group>
+                        <group name="thong_ke_cham_cong" string="Thống kê chấm công">
+                            <field name="so_ngay_cong_chuan" readonly="1"/>
+                            <field name="so_ngay_lam_viec" readonly="1"/>
+                            <field name="tong_gio_lam_viec" widget="float_time" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Chi tiết chấm công" name="chi_tiet">
+                            <field name="chi_tiet_cham_cong_ids" readonly="1">
+                                <tree string="Chi tiết chấm công">
+                                    <field name="check_in"/>
+                                    <field name="check_out"/>
+                                    <field name="worked_hours" widget="float_time"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_bang_cham_cong_thang_search" model="ir.ui.view">
+        <field name="name">bang.cham.cong.thang.search</field>
+        <field name="model">bang.cham.cong.thang</field>
+        <field name="arch" type="xml">
+            <search string="Tìm kiếm bảng chấm công">
+                <field name="nhan_vien_id"/>
+                <field name="thang"/>
+                <field name="nam"/>
+                <filter string="Tháng hiện tại" name="thang_hien_tai" 
+                        domain="[('thang', '=', context_today().month), ('nam', '=', context_today().year)]"/>
+                <filter string="Nháp" name="draft" domain="[('trang_thai', '=', 'draft')]"/>
+                <filter string="Đã xác nhận" name="confirmed" domain="[('trang_thai', '=', 'confirmed')]"/>
+                <filter string="Đã khóa" name="locked" domain="[('trang_thai', '=', 'locked')]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter string="Nhân viên" name="group_nhan_vien" context="{'group_by': 'nhan_vien_id'}"/>
+                    <filter string="Tháng" name="group_thang" context="{'group_by': 'thang'}"/>
+                    <filter string="Năm" name="group_nam" context="{'group_by': 'nam'}"/>
+                    <filter string="Trạng thái" name="group_trang_thai" context="{'group_by': 'trang_thai'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_bang_cham_cong_thang" model="ir.actions.act_window">
+        <field name="name">Bảng chấm công theo tháng</field>
+        <field name="res_model">bang.cham.cong.thang</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_bang_cham_cong_thang_search"/>
+        <field name="context">{'search_default_thang_hien_tai': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tạo bảng chấm công theo tháng
+            </p>
+            <p>
+                Bảng chấm công tổng hợp dữ liệu chấm công từ hệ thống HR Attendance
+                theo từng tháng cho mỗi nhân viên.
+            </p>
+        </field>
+    </record>
+</odoo>

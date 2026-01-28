@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bang_cham_cong_thang_user,bang.cham.cong.thang.user,model_bang_cham_cong_thang,base.group_user,1,1,1,0
+access_bang_cham_cong_thang_manager,bang.cham.cong.thang.manager,model_bang_cham_cong_thang,hr.group_hr_manager,1,1,1,1
+access_bang_luong_thang_user,bang.luong.thang.user,model_bang_luong_thang,base.group_user,1,0,0,0
+access_bang_luong_thang_hr_user,bang.luong.thang.hr.user,model_bang_luong_thang,hr.group_hr_user,1,1,1,0
+access_bang_luong_thang_manager,bang.luong.thang.manager,model_bang_luong_thang,hr.group_hr_manager,1,1,1,1
+access_tao_bang_wizard_user,tao.bang.cham.cong.luong.wizard.user,model_tao_bang_cham_cong_luong_wizard,hr.group_hr_user,1,1,1,1
