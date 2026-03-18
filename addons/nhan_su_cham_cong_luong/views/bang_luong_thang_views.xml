@@ -17,8 +17,9 @@
                 <field name="tong_ngay_cong"/>
                 <field name="so_ngay_cong_chuan"/>
                 <field name="ty_le_cong" widget="percentage"/>
-                <field name="so_lan_di_muon"/>
-                <field name="tien_phat_di_muon" widget="monetary"/>
+                <field name="tong_gio_tang_ca_thuong" string="TC thường (h)"/>
+                <field name="tong_gio_tang_ca_cuoi_tuan" string="TC cuối tuần (h)"/>
+                <field name="so_lan_vi_pham" string="Vi phạm"/>
                 <field name="luong_thuc_lanh" widget="monetary"/>
                 <field name="trang_thai" widget="badge"
                        decoration-info="trang_thai=='draft'"
@@ -73,26 +74,32 @@
                         </group>
                         <group string="Tính lương">
                             <field name="luong_co_ban" widget="monetary" readonly="1"/>
+                            <field name="luong_theo_gio" widget="monetary" readonly="1"/>
                             <field name="luong_theo_ngay_cong" widget="monetary" readonly="1"/>
                             <field name="phu_cap_khac" widget="monetary"
                                    attrs="{'readonly': [('trang_thai', 'in', ['confirmed', 'paid'])]}"/>
                             <field name="khau_tru_khac" widget="monetary"
                                    attrs="{'readonly': [('trang_thai', 'in', ['confirmed', 'paid'])]}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Tăng ca" attrs="{'invisible': [('tong_gio_tang_ca_thuong', '=', 0), ('tong_gio_tang_ca_cuoi_tuan', '=', 0)]}">
+                            <field name="tong_gio_tang_ca_thuong" readonly="1"/>
+                            <field name="tong_gio_tang_ca_cuoi_tuan" readonly="1"/>
+                            <field name="tien_tang_ca" widget="monetary" readonly="1"/>
+                        </group>
+                        <group string="Kỷ luật" attrs="{'invisible': [('so_lan_vi_pham', '=', 0)]}">
+                            <field name="so_lan_vi_pham" readonly="1"/>
+                            <field name="tong_phut_vi_pham" readonly="1"/>
+                            <field name="tien_phat_ky_luat" widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Tổng kết">
                             <field name="luong_thuc_lanh" widget="monetary" readonly="1"/>
                         </group>
                     </group>
-                    <!-- Giai đoạn 2: Thống kê đi muộn -->
-                    <group string="Kỷ luật đi muộn" attrs="{'invisible': [('so_lan_di_muon', '=', 0)]}">
-                        <group>
-                            <field name="so_lan_di_muon" readonly="1"/>
-                            <field name="tong_phut_di_muon" readonly="1"/>
-                        </group>
-                        <group>
-                            <field name="tien_phat_di_muon" widget="monetary" readonly="1"/>
-                        </group>
-                    </group>
                     <notebook>
-                        <!-- Giai đoạn 2: Chi tiết phiếu lương -->
                         <page string="Chi tiết phiếu lương" name="chi_tiet_luong">
                             <field name="line_ids"
                                    attrs="{'readonly': [('trang_thai', 'in', ['confirmed', 'paid'])]}">
@@ -108,8 +115,7 @@
                                 </tree>
                             </field>
                             <group class="oe_subtotal_footer">
-                                <field name="thuc_lanh_chi_tiet" widget="monetary" readonly="1"
-                                       string="Thực lãnh (từ chi tiết)"/>
+                                <field name="thuc_lanh_chi_tiet" widget="monetary" readonly="1"/>
                             </group>
                         </page>
                     </notebook>
