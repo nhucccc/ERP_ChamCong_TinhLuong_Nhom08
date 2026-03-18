@@ -18,7 +18,7 @@
                     </group>
                 </group>
                 <group string="Nhân viên">
-                    <field name="nhan_vien_ids" widget="many2many_tags" 
+                    <field name="employee_ids" widget="many2many_tags"
                            placeholder="Để trống để tạo cho tất cả nhân viên"/>
                 </group>
                 <footer>

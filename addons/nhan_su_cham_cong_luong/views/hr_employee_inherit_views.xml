@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Kế thừa form hr.employee - thêm trường Giai đoạn 1 -->
+    <record id="view_hr_employee_form_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.cham.cong</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <!-- Thêm trường CCCD, Quê quán vào tab Private Information -->
+            <field name="ssnid" position="after">
+                <field name="so_cccd"/>
+                <field name="ngay_cap"/>
+                <field name="que_quan"/>
+            </field>
+            <!-- Thêm tab Chấm công & Lương -->
+            <notebook position="inside">
+                <page string="Chấm công &amp; Lương" name="cham_cong_luong">
+                    <group>
+                        <group string="Bảng chấm công">
+                            <field name="bang_cham_cong_ids" readonly="1" nolabel="1">
+                                <tree string="Chấm công" limit="6"
+                                      decoration-info="trang_thai=='draft'"
+                                      decoration-success="trang_thai=='confirmed'">
+                                    <field name="thang"/>
+                                    <field name="nam"/>
+                                    <field name="so_ngay_lam_viec"/>
+                                    <field name="so_ngay_cong_chuan"/>
+                                    <field name="tong_gio_lam_viec" widget="float_time"/>
+                                    <field name="trang_thai" widget="badge"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Bảng lương">
+                            <field name="bang_luong_ids" readonly="1" nolabel="1">
+                                <tree string="Lương" limit="6"
+                                      decoration-info="trang_thai=='draft'"
+                                      decoration-success="trang_thai=='confirmed'">
+                                    <field name="thang"/>
+                                    <field name="nam"/>
+                                    <field name="luong_co_ban" widget="monetary"/>
+                                    <field name="tong_ngay_cong"/>
+                                    <field name="luong_thuc_lanh" widget="monetary"/>
+                                    <field name="trang_thai" widget="badge"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>
