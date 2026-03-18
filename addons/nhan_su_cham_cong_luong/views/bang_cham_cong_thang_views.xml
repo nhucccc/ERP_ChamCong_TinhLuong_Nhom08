@@ -19,8 +19,7 @@
                        decoration-info="trang_thai=='draft'"
                        decoration-success="trang_thai=='confirmed'"
                        decoration-muted="trang_thai=='locked'"/>
-            </tree>
-        </field>
+            </tree>        </field>
     </record>
 
     <!-- Form View -->

@@ -17,6 +17,8 @@
                 <field name="tong_ngay_cong"/>
                 <field name="so_ngay_cong_chuan"/>
                 <field name="ty_le_cong" widget="percentage"/>
+                <field name="so_lan_di_muon"/>
+                <field name="tien_phat_di_muon" widget="monetary"/>
                 <field name="luong_thuc_lanh" widget="monetary"/>
                 <field name="trang_thai" widget="badge"
                        decoration-info="trang_thai=='draft'"
@@ -79,6 +81,38 @@
                             <field name="luong_thuc_lanh" widget="monetary" readonly="1"/>
                         </group>
                     </group>
+                    <!-- Giai đoạn 2: Thống kê đi muộn -->
+                    <group string="Kỷ luật đi muộn" attrs="{'invisible': [('so_lan_di_muon', '=', 0)]}">
+                        <group>
+                            <field name="so_lan_di_muon" readonly="1"/>
+                            <field name="tong_phut_di_muon" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="tien_phat_di_muon" widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <!-- Giai đoạn 2: Chi tiết phiếu lương -->
+                        <page string="Chi tiết phiếu lương" name="chi_tiet_luong">
+                            <field name="line_ids"
+                                   attrs="{'readonly': [('trang_thai', 'in', ['confirmed', 'paid'])]}">
+                                <tree string="Chi tiết" editable="bottom"
+                                      decoration-success="loai=='cong'"
+                                      decoration-danger="loai=='tru'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="loai"/>
+                                    <field name="so_tien" widget="monetary"/>
+                                    <field name="ghi_chu"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="thuc_lanh_chi_tiet" widget="monetary" readonly="1"
+                                       string="Thực lãnh (từ chi tiết)"/>
+                            </group>
+                        </page>
+                    </notebook>
                     <group>
                         <field name="ghi_chu" attrs="{'readonly': [('trang_thai', 'in', ['confirmed', 'paid'])]}"/>
                     </group>

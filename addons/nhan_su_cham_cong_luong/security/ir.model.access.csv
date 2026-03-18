@@ -5,3 +5,6 @@ access_bang_luong_thang_user,bang.luong.thang.user,model_bang_luong_thang,base.g
 access_bang_luong_thang_hr_user,bang.luong.thang.hr.user,model_bang_luong_thang,hr.group_hr_user,1,1,1,0
 access_bang_luong_thang_manager,bang.luong.thang.manager,model_bang_luong_thang,hr.group_hr_manager,1,1,1,1
 access_tao_bang_wizard_user,tao.bang.cham.cong.luong.wizard.user,model_tao_bang_cham_cong_luong_wizard,hr.group_hr_user,1,1,1,1
+access_bang_luong_line_user,bang.luong.line.user,model_bang_luong_line,base.group_user,1,0,0,0
+access_bang_luong_line_hr_user,bang.luong.line.hr.user,model_bang_luong_line,hr.group_hr_user,1,1,1,1
+access_bang_luong_line_manager,bang.luong.line.manager,model_bang_luong_line,hr.group_hr_manager,1,1,1,1

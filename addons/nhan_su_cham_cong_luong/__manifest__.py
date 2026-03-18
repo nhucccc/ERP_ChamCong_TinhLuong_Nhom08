@@ -32,6 +32,7 @@
         'views/bang_cham_cong_thang_views.xml',
         'views/bang_luong_thang_views.xml',
         'views/hr_employee_inherit_views.xml',
+        'views/hr_attendance_inherit_views.xml',
         'views/nhan_vien_extend_views.xml',
         'wizard/tao_bang_cham_cong_luong_wizard_views.xml',
         'views/menu.xml',
