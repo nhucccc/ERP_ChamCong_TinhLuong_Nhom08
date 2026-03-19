@@ -6,11 +6,11 @@
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
-            <!-- Thêm trường CCCD, Quê quán vào tab Private Information -->
-            <field name="ssnid" position="after">
-                <field name="so_cccd"/>
-                <field name="ngay_cap"/>
-                <field name="que_quan"/>
+            <!-- Thêm trường CCCD, Quê quán vào tab Private Information (sau identification_id) -->
+            <field name="identification_id" position="after">
+                <field name="so_cccd" groups="hr.group_hr_user"/>
+                <field name="ngay_cap" groups="hr.group_hr_user"/>
+                <field name="que_quan" groups="hr.group_hr_user"/>
             </field>
             <!-- Thêm tab Chấm công & Lương -->
             <notebook position="inside">

@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Mở rộng form view của nhan_vien - thêm thống kê chấm công/lương -->
+    <!-- Mở rộng form view của nhan_vien - thêm liên kết hr.employee và thống kê -->
     <record id="view_nhan_vien_form_extend" model="ir.ui.view">
         <field name="name">nhan_vien.form.extend.cham.cong</field>
         <field name="model">nhan_vien</field>
         <field name="inherit_id" ref="nhan_su.view_nhan_vien_form"/>
         <field name="arch" type="xml">
-            <form position="inside">
-                <header>
-                    <button name="action_view_bang_cham_cong" string="Xem chấm công"
-                            type="object" class="btn-primary"
-                            attrs="{'invisible': [('hr_employee_id', '=', False)]}"/>
-                    <button name="action_view_bang_luong" string="Xem lương"
-                            type="object" class="btn-primary"
-                            attrs="{'invisible': [('hr_employee_id', '=', False)]}"/>
-                </header>
-            </form>
             <field name="so_nguoi_bang_tuoi" position="after">
                 <field name="hr_employee_id"/>
                 <field name="so_thang_cham_cong" readonly="1"/>

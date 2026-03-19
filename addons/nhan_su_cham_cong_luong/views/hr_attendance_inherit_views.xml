@@ -4,16 +4,18 @@
     <record id="view_hr_attendance_tree_inherit" model="ir.ui.view">
         <field name="name">hr.attendance.tree.inherit.cham.cong</field>
         <field name="model">hr.attendance</field>
-        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_tree"/>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
         <field name="arch" type="xml">
             <tree position="attributes">
                 <attribute name="decoration-danger">is_late == True</attribute>
             </tree>
-            <field name="worked_hours" position="after">
+            <field name="check_out" position="after">
                 <field name="is_late"/>
                 <field name="late_minutes" string="Phút muộn"/>
                 <field name="is_early_leave"/>
                 <field name="early_leave_minutes" string="Phút về sớm"/>
+                <field name="is_overtime"/>
+                <field name="overtime_hours" string="Giờ tăng ca"/>
             </field>
         </field>
     </record>
@@ -24,12 +26,16 @@
         <field name="model">hr.attendance</field>
         <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
         <field name="arch" type="xml">
-            <field name="worked_hours" position="after">
-                <separator string="Phân tích kỷ luật"/>
+            <field name="check_out" position="after">
+                <separator string="Phân tích kỷ luật &amp; Tăng ca"/>
                 <field name="is_late"/>
                 <field name="late_minutes" attrs="{'invisible': [('is_late', '=', False)]}"/>
                 <field name="is_early_leave"/>
                 <field name="early_leave_minutes" attrs="{'invisible': [('is_early_leave', '=', False)]}"/>
+                <field name="is_overtime"/>
+                <field name="overtime_hours" attrs="{'invisible': [('is_overtime', '=', False)]}"/>
+                <field name="he_so_tang_ca" attrs="{'invisible': [('is_overtime', '=', False)]}"/>
+                <field name="tong_phut_vi_pham"/>
             </field>
         </field>
     </record>
