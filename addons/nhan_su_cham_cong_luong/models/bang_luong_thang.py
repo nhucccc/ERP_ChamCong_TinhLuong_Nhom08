@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 from datetime import date, datetime
 import calendar
 
@@ -509,6 +510,88 @@ class BangLuongThang(models.Model):
                     'employee_id': emp_id, 'thang': thang, 'nam': nam
                 })
         return created
+
+    # ── AI Analysis ──────────────────────────────────────────────────────────
+    ai_phan_tich = fields.Text(
+        string='Phân tích AI', readonly=True,
+        help='Kết quả phân tích từ Google Gemini AI'
+    )
+
+    def action_phan_tich_ai(self):
+        """Gọi Gemini AI phân tích bảng lương và xu hướng nhân viên."""
+        self.ensure_one()
+
+        api_key = self.env['ir.config_parameter'].sudo().get_param(
+            'nhan_su_cham_cong_luong.gemini_api_key'
+        )
+        if not api_key:
+            raise UserError(
+                "Chưa cấu hình Gemini API Key!\n"
+                "Vào Settings → Technical → System Parameters\n"
+                "Tạo key: 'nhan_su_cham_cong_luong.gemini_api_key'\n"
+                "Lấy API key miễn phí tại: https://aistudio.google.com/app/apikey"
+            )
+
+        try:
+            import google.generativeai as genai
+        except ImportError:
+            raise UserError(
+                "Thiếu thư viện google-generativeai!\n"
+                "Chạy: pip install google-generativeai"
+            )
+
+        # Lịch sử 3 tháng gần nhất
+        lich_su = self.env['bang.luong.thang'].search([
+            ('employee_id', '=', self.employee_id.id),
+            ('trang_thai', 'in', ['calculated', 'confirmed', 'paid']),
+            ('id', '!=', self.id),
+        ], order='nam desc, thang desc', limit=3)
+
+        lich_su_str = ""
+        if lich_su:
+            lich_su_str = "\nLỊCH SỬ 3 THÁNG GẦN NHẤT:\n"
+            for bl in lich_su:
+                lich_su_str += (
+                    f"- Tháng {bl.thang:02d}/{bl.nam}: "
+                    f"Công={bl.so_ngay_lam_viec}ngày, "
+                    f"Vi phạm={bl.so_lan_vi_pham}lần/{bl.tong_phut_vi_pham}phút, "
+                    f"Tăng ca={bl.tong_gio_tang_ca_thuong + bl.tong_gio_tang_ca_cuoi_tuan:.1f}h, "
+                    f"Thực lãnh={bl.luong_thuc_lanh:,.0f}VND\n"
+                )
+
+        prompt = f"""Bạn là chuyên gia phân tích nhân sự. Phân tích dữ liệu lương sau bằng tiếng Việt, ngắn gọn.
+
+BẢNG LƯƠNG THÁNG {self.thang:02d}/{self.nam} - {self.employee_id.name}
+Phòng ban: {self.employee_id.department_id.name if self.employee_id.department_id else 'N/A'}
+
+CHẤM CÔNG: {self.so_ngay_lam_viec}/{self.so_ngay_cong_chuan} ngày ({self.ty_le_cong:.1f}%)
+KỶ LUẬT: {self.so_lan_vi_pham} lần vi phạm, {self.tong_phut_vi_pham} phút, phạt {self.tien_phat_ky_luat:,.0f}đ
+TĂNG CA: {self.tong_gio_tang_ca_thuong:.1f}h thường + {self.tong_gio_tang_ca_cuoi_tuan:.1f}h cuối tuần = {self.tien_tang_ca:,.0f}đ
+LƯƠNG: CB={self.luong_co_ban:,.0f}đ | BHXH={self.tien_bao_hiem:,.0f}đ | Thuế={self.thue_tncn:,.0f}đ | THỰC LÃNH={self.luong_thuc_lanh:,.0f}đ
+{lich_su_str}
+Phân tích theo 4 mục (mỗi mục 2-3 câu):
+1. ĐÁNH GIÁ CHUYÊN CẦN
+2. ĐÁNH GIÁ HIỆU SUẤT
+3. XU HƯỚNG SO SÁNH (nếu có lịch sử)
+4. ĐỀ XUẤT CHO HR"""
+
+        try:
+            genai.configure(api_key=api_key)
+            model_ai = genai.GenerativeModel('gemini-1.5-flash')
+            response = model_ai.generate_content(prompt)
+            self.write({'ai_phan_tich': response.text})
+        except Exception as e:
+            raise UserError(f"Lỗi Gemini API: {str(e)}")
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Phân tích AI hoàn tất',
+                'message': 'Xem kết quả bên dưới form',
+                'type': 'success',
+            }
+        }
 
     _sql_constraints = [
         ('unique_employee_thang_nam',
