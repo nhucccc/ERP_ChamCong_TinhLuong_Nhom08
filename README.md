@@ -226,8 +226,6 @@ python3 odoo-bin.py -c odoo.conf -u all
 - [`docs/Audit_Gap_Analysis.md`](docs/Audit_Gap_Analysis.md) - Audit & Gap Analysis
 - [`docs/businessflow/Nhom08_BusinessFlow_ChamCong_TinhLuong.pdf`](docs/businessflow/Nhom08_BusinessFlow_ChamCong_TinhLuong.pdf) - Sơ đồ luồng nghiệp vụ Swimlane
 
-### 7.2. Báo cáo
-- [`BAO_CAO_BAI_TAP_LON.md`](BAO_CAO_BAI_TAP_LON.md) - Báo cáo bài tập lớn
 
 ## 🔧 8. Troubleshooting
 
@@ -245,7 +243,7 @@ docker-compose restart
 
 ### 8.2. Liên hệ hỗ trợ
 - **GitHub Issues**: [Tạo issue mới](https://github.com/nhucccc/ERP_ChamCong_TinhLuong_Nhom08/issues)
-- **Email**: [Liên hệ nhóm phát triển]
+- **Email**: huyq91334@gmail.com
 
 ## 📝 9. License
 
