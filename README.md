@@ -118,11 +118,9 @@ docker-compose up -d
 
 #### 4.2.3. Tạo database và cài đặt module
 ```bash
-# Tạo database 'odoo_test' tại http://localhost:8069
-# Username: admin, Password: admin
-
-# Chạy script cài đặt module và tạo dữ liệu test
-python install_and_test.py
+# Truy cập http://localhost:8069
+# Tạo database mới: username admin, password admin
+# Vào Apps → tìm "nhan_su_cham_cong_luong" → Install
 ```
 
 ### 4.3. Cài đặt thủ công (Ubuntu/Linux)
@@ -223,19 +221,13 @@ python3 odoo-bin.py -c odoo.conf -u all
 
 ## 📚 7. Tài liệu kỹ thuật
 
-### 7.1. Tài liệu phân tích
-- [`ANALYSIS_HR_MODULES.md`](ANALYSIS_HR_MODULES.md) - Phân tích module HR
-- [`ANALYSIS_NHAN_SU_MODULE.md`](ANALYSIS_NHAN_SU_MODULE.md) - Phân tích module nhan_su
-- [`LUONG_NGHIEP_VU_END_TO_END.md`](LUONG_NGHIEP_VU_END_TO_END.md) - Luồng nghiệp vụ chi tiết
+### 7.1. Tài liệu phân tích & nghiệp vụ
+- [`docs/GIAI_DOAN_0_PHAN_TICH_NGHIEP_VU.md`](docs/GIAI_DOAN_0_PHAN_TICH_NGHIEP_VU.md) - Phân tích nghiệp vụ Giai đoạn 0
+- [`docs/Audit_Gap_Analysis.md`](docs/Audit_Gap_Analysis.md) - Audit & Gap Analysis
+- [`docs/businessflow/Nhom08_BusinessFlow_ChamCong_TinhLuong.pdf`](docs/businessflow/Nhom08_BusinessFlow_ChamCong_TinhLuong.pdf) - Sơ đồ luồng nghiệp vụ Swimlane
 
-### 7.2. Tài liệu quản lý dự án
-- [`PROJECT_README.md`](PROJECT_README.md) - Tổng quan dự án
-- [`DANH_SACH_MODULES_PHAN_LOAI.md`](DANH_SACH_MODULES_PHAN_LOAI.md) - Phân loại module
-- [`PHAN_TICH_PROJECT_STRUCTURE.md`](PHAN_TICH_PROJECT_STRUCTURE.md) - Phân tích cấu trúc
-
-### 7.3. Hướng dẫn sử dụng
-- [`README_FINAL.md`](README_FINAL.md) - Tài liệu tổng kết cuối cùng
-- [`addons/nhan_su_cham_cong_luong/README.md`](addons/nhan_su_cham_cong_luong/README.md) - Hướng dẫn module
+### 7.2. Báo cáo
+- [`BAO_CAO_BAI_TAP_LON.md`](BAO_CAO_BAI_TAP_LON.md) - Báo cáo bài tập lớn
 
 ## 🔧 8. Troubleshooting
 
