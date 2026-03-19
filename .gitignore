@@ -18,6 +18,9 @@ __pycache__/
 status
 # odoo filestore
 odoo/filestore
+/filestore/
+# odoo test config
+odoo_test.conf
 # maintenance migration scripts
 odoo/addons/base/maintenance
 # window installation config file
