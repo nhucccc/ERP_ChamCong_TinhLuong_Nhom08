@@ -46,6 +46,10 @@
                             class="btn-secondary" attrs="{'invisible': [('trang_thai', '!=', 'confirmed')]}"/>
                     <button name="action_reset_to_draft" string="Đưa về nháp" type="object"
                             attrs="{'invisible': [('trang_thai', '=', 'draft')]}"/>
+                    <button name="action_phan_tich_ai" string="🤖 Phân tích AI" type="object"
+                            class="btn-info"
+                            attrs="{'invisible': [('trang_thai', '=', 'draft')]}"
+                            help="Dùng Google Gemini AI phân tích xu hướng nhân viên"/>
                     <field name="trang_thai" widget="statusbar" statusbar_visible="draft,calculated,confirmed,paid"/>
                 </header>
                 <sheet>
@@ -130,6 +134,11 @@
                     </notebook>
                     <group>
                         <field name="ghi_chu" attrs="{'readonly': [('trang_thai', 'in', ['confirmed', 'paid'])]}"/>
+                    </group>
+                    <!-- Kết quả phân tích AI -->
+                    <group attrs="{'invisible': [('ai_phan_tich', '=', False)]}">
+                        <field name="ai_phan_tich" string="🤖 Kết quả phân tích AI" readonly="1"
+                               widget="text" nolabel="0"/>
                     </group>
                 </sheet>
             </form>
