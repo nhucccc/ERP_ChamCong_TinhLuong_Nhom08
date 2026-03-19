@@ -532,13 +532,8 @@ class BangLuongThang(models.Model):
                 "Lấy API key miễn phí tại: https://aistudio.google.com/app/apikey"
             )
 
-        try:
-            import google.generativeai as genai
-        except ImportError:
-            raise UserError(
-                "Thiếu thư viện google-generativeai!\n"
-                "Chạy: pip install google-generativeai"
-            )
+        import requests as req
+        import json
 
         # Lịch sử 3 tháng gần nhất
         lich_su = self.env['bang.luong.thang'].search([
@@ -575,13 +570,20 @@ Phân tích theo 4 mục (mỗi mục 2-3 câu):
 3. XU HƯỚNG SO SÁNH (nếu có lịch sử)
 4. ĐỀ XUẤT CHO HR"""
 
+        # Gọi Gemini REST API trực tiếp - không cần thư viện ngoài
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+        payload = {"contents": [{"parts": [{"text": prompt}]}]}
+
         try:
-            genai.configure(api_key=api_key)
-            model_ai = genai.GenerativeModel('gemini-1.5-flash')
-            response = model_ai.generate_content(prompt)
-            self.write({'ai_phan_tich': response.text})
-        except Exception as e:
-            raise UserError(f"Lỗi Gemini API: {str(e)}")
+            response = req.post(url, json=payload, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+            ket_qua = data['candidates'][0]['content']['parts'][0]['text']
+            self.write({'ai_phan_tich': ket_qua})
+        except req.exceptions.RequestException as e:
+            raise UserError(f"Lỗi kết nối Gemini API: {str(e)}")
+        except (KeyError, IndexError):
+            raise UserError(f"Phản hồi không hợp lệ từ Gemini: {response.text[:200]}")
 
         return {
             'type': 'ir.actions.client',
