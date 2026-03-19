@@ -29,6 +29,12 @@
               action="action_bang_luong_thang" 
               sequence="10"/>
 
+    <menuitem id="menu_nguoi_phu_thuoc"
+              name="Người phụ thuộc (GTGC)"
+              parent="menu_luong"
+              action="action_hr_family_member"
+              sequence="20"/>
+
     <!-- Báo cáo Menu -->
     <menuitem id="menu_bao_cao" 
               name="Báo cáo" 

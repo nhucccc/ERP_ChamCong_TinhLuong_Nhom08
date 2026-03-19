@@ -23,6 +23,12 @@ class HrEmployeeInherit(models.Model):
         'employee_id',
         string='Bảng lương'
     )
+    # Người phụ thuộc - giảm trừ gia cảnh
+    family_member_ids = fields.One2many(
+        'hr.family.member',
+        'employee_id',
+        string='Người phụ thuộc'
+    )
 
     @api.constrains('birthday')
     def _check_birthday(self):

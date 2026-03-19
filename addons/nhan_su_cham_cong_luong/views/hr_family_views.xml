@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ── List view ── -->
+    <record id="view_hr_family_member_list" model="ir.ui.view">
+        <field name="name">hr.family.member.list</field>
+        <field name="model">hr.family.member</field>
+        <field name="arch" type="xml">
+            <tree string="Người phụ thuộc" decoration-muted="not da_dang_ky">
+                <field name="employee_id"/>
+                <field name="ho_ten"/>
+                <field name="loai_quan_he"/>
+                <field name="ngay_sinh"/>
+                <field name="tuoi"/>
+                <field name="so_cccd"/>
+                <field name="da_dang_ky" widget="boolean_toggle"/>
+                <field name="ngay_bat_dau"/>
+                <field name="ngay_ket_thuc"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ── Form view ── -->
+    <record id="view_hr_family_member_form" model="ir.ui.view">
+        <field name="name">hr.family.member.form</field>
+        <field name="model">hr.family.member</field>
+        <field name="arch" type="xml">
+            <form string="Người phụ thuộc">
+                <sheet>
+                    <group>
+                        <group string="Thông tin cơ bản">
+                            <field name="employee_id"/>
+                            <field name="ho_ten"/>
+                            <field name="loai_quan_he"/>
+                            <field name="ngay_sinh"/>
+                            <field name="tuoi" readonly="1"/>
+                            <field name="so_cccd"/>
+                        </group>
+                        <group string="Đăng ký NPT">
+                            <field name="da_dang_ky" widget="boolean_toggle"/>
+                            <field name="ngay_bat_dau"/>
+                            <field name="ngay_ket_thuc"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Action ── -->
+    <record id="action_hr_family_member" model="ir.actions.act_window">
+        <field name="name">Người phụ thuộc</field>
+        <field name="res_model">hr.family.member</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

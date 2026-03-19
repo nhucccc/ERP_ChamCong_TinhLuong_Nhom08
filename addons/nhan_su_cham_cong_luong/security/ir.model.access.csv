@@ -8,3 +8,6 @@ access_tao_bang_wizard_user,tao.bang.cham.cong.luong.wizard.user,model_tao_bang_
 access_bang_luong_line_user,bang.luong.line.user,model_bang_luong_line,base.group_user,1,0,0,0
 access_bang_luong_line_hr_user,bang.luong.line.hr.user,model_bang_luong_line,hr.group_hr_user,1,1,1,1
 access_bang_luong_line_manager,bang.luong.line.manager,model_bang_luong_line,hr.group_hr_manager,1,1,1,1
+access_hr_family_member_user,hr.family.member.user,model_hr_family_member,base.group_user,1,0,0,0
+access_hr_family_member_hr_user,hr.family.member.hr.user,model_hr_family_member,hr.group_hr_user,1,1,1,1
+access_hr_family_member_manager,hr.family.member.manager,model_hr_family_member,hr.group_hr_manager,1,1,1,1

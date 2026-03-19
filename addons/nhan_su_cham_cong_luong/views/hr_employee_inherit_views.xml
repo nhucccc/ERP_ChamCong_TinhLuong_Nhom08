@@ -47,6 +47,38 @@
                         </group>
                     </group>
                 </page>
+                <!-- Tab Người phụ thuộc - Giảm trừ gia cảnh -->
+                <page string="Người phụ thuộc (GTGC)" name="nguoi_phu_thuoc">
+                    <field name="family_member_ids" nolabel="1">
+                        <tree string="Người phụ thuộc" editable="bottom"
+                              decoration-muted="not da_dang_ky">
+                            <field name="ho_ten"/>
+                            <field name="loai_quan_he"/>
+                            <field name="ngay_sinh"/>
+                            <field name="tuoi" readonly="1"/>
+                            <field name="so_cccd"/>
+                            <field name="da_dang_ky" widget="boolean_toggle"/>
+                            <field name="ngay_bat_dau"/>
+                            <field name="ngay_ket_thuc"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <group>
+                                    <field name="ho_ten"/>
+                                    <field name="loai_quan_he"/>
+                                    <field name="ngay_sinh"/>
+                                    <field name="tuoi" readonly="1"/>
+                                    <field name="so_cccd"/>
+                                </group>
+                                <group>
+                                    <field name="da_dang_ky" widget="boolean_toggle"/>
+                                    <field name="ngay_bat_dau"/>
+                                    <field name="ngay_ket_thuc"/>
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+                </page>
             </notebook>
         </field>
     </record>

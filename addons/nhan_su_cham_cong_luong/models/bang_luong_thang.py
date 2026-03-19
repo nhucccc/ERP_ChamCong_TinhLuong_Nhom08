@@ -4,8 +4,14 @@ from odoo import models, fields, api
 from datetime import date, datetime
 import calendar
 
+from .hr_family import tinh_thue_tncn, GTGC_BAN_THAN, GTGC_NGUOI_PHU_THUOC
+
 # Mức phạt mỗi phút vi phạm kỷ luật (VND)
 PHAT_MOI_PHUT_VI_PHAM = 5_000
+
+# Tỷ lệ BHXH/BHYT/BHTN nhân viên đóng (% lương cơ bản)
+# BHXH 8% + BHYT 1.5% + BHTN 1% = 10.5%
+TY_LE_BAO_HIEM_NV = 0.105
 
 
 class BangLuongThang(models.Model):
@@ -105,11 +111,44 @@ class BangLuongThang(models.Model):
         'Khấu trừ khác', currency_field='currency_id', default=0.0
     )
 
+    # ── Bảo hiểm xã hội ──────────────────────────────────────────────────────
+    tien_bao_hiem = fields.Monetary(
+        'BHXH/BHYT/BHTN (NV đóng)', currency_field='currency_id',
+        compute='_compute_thue_tncn', store=True,
+        help=f'Lương cơ bản × {TY_LE_BAO_HIEM_NV*100:.1f}% (BHXH 8% + BHYT 1.5% + BHTN 1%)'
+    )
+
+    # ── Giảm trừ gia cảnh & Thuế TNCN - Tính năng tâm đắc ──────────────────
+    so_nguoi_phu_thuoc = fields.Integer(
+        'Số người phụ thuộc', compute='_compute_thue_tncn', store=True,
+        help='Số NPT đã đăng ký và còn hiệu lực trong tháng'
+    )
+    tong_giam_tru_gia_canh = fields.Monetary(
+        'Tổng giảm trừ gia cảnh', currency_field='currency_id',
+        compute='_compute_thue_tncn', store=True,
+        help='GTGC bản thân (11tr) + GTGC NPT (4.4tr × số NPT)'
+    )
+    thu_nhap_chiu_thue = fields.Monetary(
+        'Thu nhập chịu thuế', currency_field='currency_id',
+        compute='_compute_thue_tncn', store=True,
+        help='Lương thực nhận trước thuế - Bảo hiểm'
+    )
+    thu_nhap_tinh_thue = fields.Monetary(
+        'Thu nhập tính thuế', currency_field='currency_id',
+        compute='_compute_thue_tncn', store=True,
+        help='Thu nhập chịu thuế - Tổng giảm trừ gia cảnh'
+    )
+    thue_tncn = fields.Monetary(
+        'Thuế TNCN', currency_field='currency_id',
+        compute='_compute_thue_tncn', store=True,
+        help='Thuế thu nhập cá nhân lũy tiến 7 bậc'
+    )
+
     # ── Lương thực lãnh ──────────────────────────────────────────────────────
     luong_thuc_lanh = fields.Monetary(
         'Lương thực lãnh', currency_field='currency_id',
         compute='_compute_luong_thuc_lanh', store=True,
-        help='Lương ngày công + Tăng ca + Phụ cấp - Phạt - Khấu trừ'
+        help='Lương ngày công + Tăng ca + Phụ cấp - Phạt - BHXH - Thuế TNCN - Khấu trừ'
     )
 
     # ── Chi tiết phiếu lương (One2many) ──────────────────────────────────────
@@ -267,8 +306,69 @@ class BangLuongThang(models.Model):
                 rec.tien_tang_ca = 0.0
 
     @api.depends(
+        'employee_id', 'thang', 'nam',
+        'luong_theo_ngay_cong', 'tien_tang_ca', 'phu_cap_khac',
+        'tien_phat_ky_luat', 'luong_co_ban'
+    )
+    def _compute_thue_tncn(self):
+        """
+        Tính thuế TNCN lũy tiến và giảm trừ gia cảnh.
+        Quy trình:
+          1. Đếm NPT còn hiệu lực trong tháng từ hr.family.member
+          2. GTGC = 11tr (bản thân) + 4.4tr × số NPT
+          3. BHXH/BHYT/BHTN = lương CB × 10.5%
+          4. Thu nhập chịu thuế = tổng thu nhập - BHXH
+          5. Thu nhập tính thuế = TNCT - GTGC (min 0)
+          6. Thuế TNCN = lũy tiến 7 bậc
+        """
+        for rec in self:
+            if not (rec.employee_id and rec.thang and rec.nam):
+                rec.so_nguoi_phu_thuoc = 0
+                rec.tong_giam_tru_gia_canh = 0.0
+                rec.tien_bao_hiem = 0.0
+                rec.thu_nhap_chiu_thue = 0.0
+                rec.thu_nhap_tinh_thue = 0.0
+                rec.thue_tncn = 0.0
+                continue
+
+            # 1. Đếm NPT hiệu lực trong tháng
+            npt_records = self.env['hr.family.member'].search([
+                ('employee_id', '=', rec.employee_id.id),
+                ('da_dang_ky', '=', True),
+            ])
+            so_npt = sum(
+                1 for npt in npt_records
+                if npt.is_active_in_month(rec.thang, rec.nam)
+            )
+            rec.so_nguoi_phu_thuoc = so_npt
+
+            # 2. Giảm trừ gia cảnh
+            rec.tong_giam_tru_gia_canh = GTGC_BAN_THAN + so_npt * GTGC_NGUOI_PHU_THUOC
+
+            # 3. BHXH/BHYT/BHTN (tính trên lương cơ bản hợp đồng)
+            rec.tien_bao_hiem = rec.luong_co_ban * TY_LE_BAO_HIEM_NV
+
+            # 4. Thu nhập chịu thuế
+            tong_thu_nhap = (
+                rec.luong_theo_ngay_cong
+                + rec.tien_tang_ca
+                + rec.phu_cap_khac
+                - rec.tien_phat_ky_luat
+            )
+            rec.thu_nhap_chiu_thue = max(0.0, tong_thu_nhap - rec.tien_bao_hiem)
+
+            # 5. Thu nhập tính thuế
+            rec.thu_nhap_tinh_thue = max(
+                0.0, rec.thu_nhap_chiu_thue - rec.tong_giam_tru_gia_canh
+            )
+
+            # 6. Thuế TNCN lũy tiến
+            rec.thue_tncn = tinh_thue_tncn(rec.thu_nhap_tinh_thue)
+
+    @api.depends(
         'luong_theo_ngay_cong', 'tien_tang_ca',
-        'phu_cap_khac', 'tien_phat_ky_luat', 'khau_tru_khac'
+        'phu_cap_khac', 'tien_phat_ky_luat',
+        'tien_bao_hiem', 'thue_tncn', 'khau_tru_khac'
     )
     def _compute_luong_thuc_lanh(self):
         for rec in self:
@@ -277,6 +377,8 @@ class BangLuongThang(models.Model):
                 + rec.tien_tang_ca
                 + rec.phu_cap_khac
                 - rec.tien_phat_ky_luat
+                - rec.tien_bao_hiem
+                - rec.thue_tncn
                 - rec.khau_tru_khac
             )
 
@@ -341,6 +443,26 @@ class BangLuongThang(models.Model):
                     ),
                     'loai': 'tru', 'sequence': 50,
                     'so_tien': rec.tien_phat_ky_luat,
+                })
+            if rec.tien_bao_hiem:
+                lines.append({
+                    'name': (
+                        f'BHXH/BHYT/BHTN ({TY_LE_BAO_HIEM_NV*100:.1f}% × '
+                        f'{rec.luong_co_ban:,.0f}đ)'
+                    ),
+                    'loai': 'tru', 'sequence': 55,
+                    'so_tien': rec.tien_bao_hiem,
+                })
+            if rec.thue_tncn:
+                lines.append({
+                    'name': (
+                        f'Thuế TNCN lũy tiến '
+                        f'(TNTT: {rec.thu_nhap_tinh_thue:,.0f}đ, '
+                        f'GTGC: {rec.tong_giam_tru_gia_canh:,.0f}đ, '
+                        f'{rec.so_nguoi_phu_thuoc} NPT)'
+                    ),
+                    'loai': 'tru', 'sequence': 57,
+                    'so_tien': rec.thue_tncn,
                 })
             if rec.khau_tru_khac:
                 lines.append({

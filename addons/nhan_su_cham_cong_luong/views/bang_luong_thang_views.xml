@@ -94,7 +94,16 @@
                             <field name="tien_phat_ky_luat" widget="monetary" readonly="1"/>
                         </group>
                     </group>
+                    <!-- Giảm trừ gia cảnh & Thuế TNCN -->
                     <group>
+                        <group string="Giảm trừ gia cảnh (GTGC)">
+                            <field name="so_nguoi_phu_thuoc" readonly="1"/>
+                            <field name="tong_giam_tru_gia_canh" widget="monetary" readonly="1"/>
+                            <field name="tien_bao_hiem" widget="monetary" readonly="1"/>
+                            <field name="thu_nhap_chiu_thue" widget="monetary" readonly="1"/>
+                            <field name="thu_nhap_tinh_thue" widget="monetary" readonly="1"/>
+                            <field name="thue_tncn" widget="monetary" readonly="1"/>
+                        </group>
                         <group string="Tổng kết">
                             <field name="luong_thuc_lanh" widget="monetary" readonly="1"/>
                         </group>
