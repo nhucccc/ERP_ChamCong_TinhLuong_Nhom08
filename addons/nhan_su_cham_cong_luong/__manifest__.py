@@ -11,10 +11,16 @@
         - Tích hợp với module nhan_su (master data)
         - Tự động hóa quy trình tính lương
     """,
-    'author': "Thực tập CNTT7",
-    'website': "http://www.yourcompany.com",
+    'author': "Nhóm 08 - Thực tập CNTT7 - FIT-DNU",
+    'website': "https://github.com/nhucccc/ERP_ChamCong_TinhLuong_Nhom08",
     'category': 'Human Resources',
-    'version': '15.0.1.0.0',
+    'version': '15.0.2.0.0',
+    # Nguồn tham khảo: module nhan_su từ kho GitHub học phần FIT-DNU
+    # https://github.com/FIT-DNU/Business-Internship
+    # Cải tiến: tích hợp hr.employee/hr.attendance/hr.contract Odoo native,
+    # tính lương lũy tiến Thuế TNCN 7 bậc, phát hiện đi muộn/về sớm/tăng ca,
+    # quản lý người phụ thuộc giảm trừ gia cảnh, tích hợp Gemini AI phân tích lương,
+    # kết nối External API XML-RPC giả lập máy chấm công.
     
     # Dependencies - các module cần thiết
     'depends': [
