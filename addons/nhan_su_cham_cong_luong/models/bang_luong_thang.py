@@ -571,7 +571,7 @@ Phân tích theo 4 mục (mỗi mục 2-3 câu):
 4. ĐỀ XUẤT CHO HR"""
 
         # Gọi Gemini REST API trực tiếp - không cần thư viện ngoài
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
         payload = {"contents": [{"parts": [{"text": prompt}]}]}
 
         try:
