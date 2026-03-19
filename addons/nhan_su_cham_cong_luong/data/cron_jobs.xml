@@ -34,26 +34,23 @@ model.tao_bang_luong_thang()
 
     <!-- Cron job tự động tính lương vào ngày 5 hàng tháng -->
     <record id="cron_tinh_luong_tu_dong" model="ir.cron">
-        <field name="name">Tính lương tự động</field>
+        <field name="name">Tính lương tự động (ngày 5 hàng tháng)</field>
         <field name="model_id" ref="model_bang_luong_thang"/>
         <field name="state">code</field>
         <field name="code">
-# Tự động tính lương cho các bảng lương ở trạng thái nháp
+# Tự động tính lương cho tất cả bảng lương ở trạng thái nháp trong tháng hiện tại
 today = fields.Date.today()
-
-# Chỉ chạy vào ngày 5 hàng tháng
-if today.day == 5:
-    bang_luong_draft = model.search([
-        ('trang_thai', '=', 'draft'),
-        ('thang', '=', today.month),
-        ('nam', '=', today.year)
-    ])
-    
-    for bang_luong in bang_luong_draft:
-        bang_luong.action_calculate()
+bang_luong_draft = model.search([
+    ('trang_thai', '=', 'draft'),
+    ('thang', '=', today.month),
+    ('nam', '=', today.year),
+])
+for bang_luong in bang_luong_draft:
+    bang_luong.action_calculate()
         </field>
         <field name="interval_number">1</field>
-        <field name="interval_type">days</field>
+        <field name="interval_type">months</field>
+        <field name="nextcall">2026-04-05 01:00:00</field>
         <field name="numbercall">-1</field>
         <field name="active">True</field>
         <field name="user_id" ref="base.user_root"/>
