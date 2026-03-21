@@ -54,8 +54,8 @@ class OdooClient:
     def lay_danh_sach_nhan_vien(self):
         """Lấy danh sách nhân viên đang hoạt động."""
         employees = self.execute(
-            'hr.employee', 'search_read',
-            [[('active', '=', True)]],
+            'hr.employee.public', 'search_read',
+            [('active', '=', True)],
             fields=['id', 'name', 'job_title', 'department_id'],
             limit=50,
         )
@@ -67,13 +67,9 @@ class OdooClient:
         """Ghi nhận check-in cho nhân viên."""
         now_utc = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
 
-        # Kiểm tra xem đã có bản ghi check-in chưa check-out chưa
         existing = self.execute(
             'hr.attendance', 'search_read',
-            [[
-                ('employee_id', '=', employee_id),
-                ('check_out', '=', False),
-            ]],
+            [('employee_id', '=', employee_id), ('check_out', '=', False)],
             fields=['id', 'check_in'],
             limit=1,
         )
@@ -92,13 +88,9 @@ class OdooClient:
         """Ghi nhận check-out cho nhân viên."""
         now_utc = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
 
-        # Tìm bản ghi check-in chưa check-out
         existing = self.execute(
             'hr.attendance', 'search_read',
-            [[
-                ('employee_id', '=', employee_id),
-                ('check_out', '=', False),
-            ]],
+            [('employee_id', '=', employee_id), ('check_out', '=', False)],
             fields=['id', 'check_in'],
             limit=1,
         )
@@ -107,27 +99,34 @@ class OdooClient:
             return None
 
         record_id = existing[0]['id']
-        self.execute(
+        print(f"  → Tìm thấy bản ghi ID={record_id}, check_in={existing[0]['check_in']}")
+
+        # write() qua XML-RPC: args=[list_ids, vals] truyền thành 2 positional args
+        # execute_kw nhận: (db, uid, pass, model, method, [args], {kwargs})
+        # write cần: args = [[record_id], {vals}]
+        self.models.execute_kw(
+            self.db, self.uid, self._password,
             'hr.attendance', 'write',
-            [[record_id], {'check_out': now_utc}]
+            [[record_id], {'check_out': now_utc}],
+            {}
         )
         print(f"✅ Check-out thành công! Bản ghi ID={record_id}, thời gian={now_utc}")
         return record_id
 
     def lay_cham_cong_thang(self, employee_id: int, thang: int, nam: int):
         """Lấy dữ liệu chấm công của nhân viên trong tháng."""
-        ngay_dau = f"{nam}-{thang:02d}-01 00:00:00"
         import calendar
+        ngay_dau = f"{nam}-{thang:02d}-01 00:00:00"
         ngay_cuoi_so = calendar.monthrange(nam, thang)[1]
         ngay_cuoi = f"{nam}-{thang:02d}-{ngay_cuoi_so} 23:59:59"
 
         records = self.execute(
             'hr.attendance', 'search_read',
-            [[
+            [
                 ('employee_id', '=', employee_id),
                 ('check_in', '>=', ngay_dau),
                 ('check_in', '<=', ngay_cuoi),
-            ]],
+            ],
             fields=['check_in', 'check_out', 'worked_hours', 'is_late', 'late_minutes', 'is_overtime'],
             order='check_in asc',
         )
@@ -139,11 +138,11 @@ class OdooClient:
         """Lấy thông tin bảng lương của nhân viên."""
         records = self.execute(
             'bang.luong.thang', 'search_read',
-            [[
+            [
                 ('employee_id', '=', employee_id),
                 ('thang', '=', thang),
                 ('nam', '=', nam),
-            ]],
+            ],
             fields=[
                 'ten_bang_luong', 'luong_co_ban', 'tong_ngay_cong',
                 'tien_phat_ky_luat', 'tien_tang_ca', 'thue_tncn',

@@ -39,7 +39,7 @@ model.tao_bang_luong_thang()
         <field name="state">code</field>
         <field name="code">
 # Tự động tính lương cho tất cả bảng lương ở trạng thái nháp trong tháng hiện tại
-today = fields.Date.today()
+today = datetime.date.today()
 bang_luong_draft = model.search([
     ('trang_thai', '=', 'draft'),
     ('thang', '=', today.month),

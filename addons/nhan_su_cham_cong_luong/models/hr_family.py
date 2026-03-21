@@ -146,5 +146,5 @@ class HrFamilyMember(models.Model):
     _sql_constraints = [
         ('unique_cccd_employee',
          'unique(employee_id, so_cccd)',
-         'Số CCCD này đã được đăng ký cho nhân viên này!')
+         'Số CCCD này đã được đăng ký cho nhân viên này!'),
     ]
